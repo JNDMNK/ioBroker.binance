@@ -47,7 +47,7 @@ class Binance extends utils.Adapter {
      * Request 24hr
      */
     request24hr() {
-        this.log.debug('request24hr');
+        this.log.info('request24hr');
 
         for(const symbol of this.config.symbols.split(',')) {
 
@@ -61,7 +61,7 @@ class Binance extends utils.Adapter {
                 (error, response, content) => {
                     if (!error) {
                         if (response.statusCode == 200) {
-                            this.log.debug('received 24hr data for ' + symbol);
+                            this.log.info('received 24hr data for ' + symbol);
                             for (const key of Object.keys(content)) {
                                 this.setObjectNotExists('24hr.' + symbol + '.' + key, {
                                     type: 'state',
@@ -105,7 +105,7 @@ class Binance extends utils.Adapter {
      * Request prices
      */
     requestPrices() {
-        this.log.debug('requestPrices');
+        this.log.info('requestPrices');
 
         request(
             {
@@ -116,10 +116,10 @@ class Binance extends utils.Adapter {
             },
             (error, response, content) => {
                 if (!error) {
-                    this.log.debug('response.statusCode: ' + response.statusCode);
+                    this.log.info('response.statusCode: ' + response.statusCode);
 
                     if (response.statusCode == 200) {
-                        this.log.debug('received ' + content.length + ' prices');
+                        this.log.info('received ' + content.length + ' prices');
                         for (const entry of content) {
                             this.setObjectNotExists('price.' + entry.symbol, {
                                 type: 'state',
@@ -161,7 +161,7 @@ class Binance extends utils.Adapter {
      * Request account
      */
     requestAccount() {
-        this.log.debug('requestAccount');
+        this.log.info('requestAccount');
 
         const timestamp = Date.now();
         const queryString = 'timestamp=' + timestamp;
@@ -190,7 +190,7 @@ class Binance extends utils.Adapter {
                     if (!error) {
 
                         if (response.statusCode == 200) {
-                            this.log.debug('got account response');
+                            this.log.info('got account response');
 
                             // balances
                             for(const balance of content.balances){
