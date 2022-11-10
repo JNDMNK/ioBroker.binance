@@ -74,17 +74,27 @@ class Binance extends utils.Adapter {
                                     },
                                     native: {}
                                 });
-                                this.setState('24hr.' + symbol + '.' + key, content[key]);
+                                this.setState('24hr.' + symbol + '.' + key, content[key],true);
                             }
 
                         } else if (response.statusCode == 418 || response.statusCode == 429) {
                             // we need to back off
                             this.log.warn('need to back off');
                             // TODO
-
+                            
+                        } else if (response.statusCode == 403) {
+                            // IP is blocked
+                            this.log.warn('IP is blocked');
+                            // TODO
+                            
+                        } else if (response.statusCode == -1001) {
+                            // IP is blocked
+                            this.log.warn('Disconnected');
+                            // TODO
+                                                        
                         } else {
                             // unexpected
-                            this.log.error('unexpected response.statusCode');
+                            this.log.debug('unexpected response.statusCode');
                         }
 
                     } else {
@@ -127,7 +137,7 @@ class Binance extends utils.Adapter {
                                 },
                                 native: {}
                             });
-                            this.setState('price.' + entry.symbol, entry.price);
+                            this.setState('price.' + entry.symbol, entry.price,true);
                         }
 
                     } else if (response.statusCode == 418 || response.statusCode == 429) {
@@ -197,7 +207,7 @@ class Binance extends utils.Adapter {
                                         },
                                         native: {}
                                     });
-                                    this.setState('account.balance.' + balance.asset, balance.free);
+                                    this.setState('account.balance.' + balance.asset, balance.free,true);
                                 }
                             }
 
