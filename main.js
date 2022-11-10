@@ -17,7 +17,7 @@ class Binance extends utils.Adapter {
     constructor(options) {
         super({
             ...options,
-            name: 'binance',
+            name: 'binance.test',
         });
         this.on('ready', this.onReady.bind(this));
         this.on('unload', this.onUnload.bind(this));
