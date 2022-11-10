@@ -17,7 +17,7 @@ class Binance extends utils.Adapter {
     constructor(options) {
         super({
             ...options,
-            name: 'binance.test',
+            name: 'binance',
         });
         this.on('ready', this.onReady.bind(this));
         this.on('unload', this.onUnload.bind(this));
@@ -47,7 +47,7 @@ class Binance extends utils.Adapter {
      * Request 24hr
      */
     request24hr() {
-        this.log.info('request24hr');
+        this.log.debug('request24hr');
 
         for(const symbol of this.config.symbols.split(',')) {
 
@@ -61,7 +61,7 @@ class Binance extends utils.Adapter {
                 (error, response, content) => {
                     if (!error) {
                         if (response.statusCode == 200) {
-                            this.log.info('received 24hr data for ' + symbol);
+                            this.log.debug('received 24hr data for ' + symbol);
                             for (const key of Object.keys(content)) {
                                 this.setObjectNotExists('24hr.' + symbol + '.' + key, {
                                     type: 'state',
@@ -81,20 +81,15 @@ class Binance extends utils.Adapter {
                             // we need to back off
                             this.log.warn('need to back off');
                             // TODO
-                            
-                        } else if (response.statusCode == 403) {
-                            // IP is blocked
-                            this.log.warn('IP is blocked');
-                            // TODO
-                            
-                        } else if (response.statusCode == -1001) {
-                            // IP is blocked
-                            this.log.warn('Disconnected');
-                            // TODO
-                                                        
+
+                        } else if (response.statusCode == 400) {
+                            // Symbol not found on Binance
+                            this.log.warn(symbol + ' not found');
+
+
                         } else {
                             // unexpected
-                            this.log.debug('unexpected response.statusCode');
+                            this.log.error('24h: unexpected response.statusCode (' + response.statusCode + ')');
                         }
 
                     } else {
@@ -106,11 +101,11 @@ class Binance extends utils.Adapter {
         }
     }
 
-    /**
+ /**
      * Request prices
      */
     requestPrices() {
-        this.log.info('requestPrices');
+        this.log.debug('requestPrices');
 
         request(
             {
@@ -121,10 +116,10 @@ class Binance extends utils.Adapter {
             },
             (error, response, content) => {
                 if (!error) {
-                    this.log.info('response.statusCode: ' + response.statusCode);
+                    this.log.debug('response.statusCode: ' + response.statusCode);
 
                     if (response.statusCode == 200) {
-                        this.log.info('received ' + content.length + ' prices');
+                        this.log.debug('received ' + content.length + ' prices');
                         for (const entry of content) {
                             this.setObjectNotExists('price.' + entry.symbol, {
                                 type: 'state',
@@ -145,9 +140,13 @@ class Binance extends utils.Adapter {
                         this.log.warn('need to back off');
                         // TODO
 
+                    } else if (response.statusCode == 400){
+                        // bad request
+                        this.log.warn(entry.symbol + ' not found');
+
                     } else {
                         // unexpected
-                        this.log.error('unexpected response.statusCode');
+                        this.log.error('Prices: unexpected response.statusCode (' + response.statusCode + ')');
                     }
 
                 } else {
@@ -162,7 +161,7 @@ class Binance extends utils.Adapter {
      * Request account
      */
     requestAccount() {
-        this.log.info('requestAccount');
+        this.log.debug('requestAccount');
 
         const timestamp = Date.now();
         const queryString = 'timestamp=' + timestamp;
@@ -191,7 +190,7 @@ class Binance extends utils.Adapter {
                     if (!error) {
 
                         if (response.statusCode == 200) {
-                            this.log.info('got account response');
+                            this.log.debug('got account response');
 
                             // balances
                             for(const balance of content.balances){
@@ -218,7 +217,7 @@ class Binance extends utils.Adapter {
 
                         } else {
                             // unexpected
-                            this.log.error('unexpected response.statusCode');
+                            this.log.error('Account: unexpected response.statusCode (' + response.statusCode + ')');
                             this.log.error(JSON.stringify(response));
                         }
 
@@ -231,7 +230,7 @@ class Binance extends utils.Adapter {
         });
     }
 
-    /**
+ /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      * @param {() => void} callback
      */
@@ -268,3 +267,4 @@ if (module.parent) {
     // otherwise start the instance directly
     new Binance();
 }
+
