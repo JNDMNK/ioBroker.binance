@@ -93,7 +93,7 @@ class Binance extends utils.Adapter {
                         }
 
                     } else {
-                        this.log.error('request error');
+                        this.log.error('request 24hr error');
                         this.log.error(error);
                     }
                 }
@@ -150,7 +150,7 @@ class Binance extends utils.Adapter {
                     }
 
                 } else {
-                    this.log.error('request error');
+                    this.log.error('request prices error');
                     this.log.error(error);
                 }
             }
@@ -222,7 +222,7 @@ class Binance extends utils.Adapter {
                         }
 
                     } else {
-                        this.log.error('request error');
+                        this.log.error('request account error');
                         this.log.error(error);
                     }
                 }
