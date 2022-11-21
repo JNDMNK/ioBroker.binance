@@ -79,12 +79,12 @@ class Binance extends utils.Adapter {
 
                         } else if (response.statusCode == 418 || response.statusCode == 429) {
                             // we need to back off
-                            this.log.warn('need to back off');
+                            this.log.warn('24h: need to back off');
                             // TODO
 
                         } else if (response.statusCode == 400) {
                             // Symbol not found on Binance
-                            this.log.warn(symbol + ' not found');
+                            this.log.warn('24h: ' + symbol + ' not found');
 
 
                         } else {
@@ -93,7 +93,7 @@ class Binance extends utils.Adapter {
                         }
 
                     } else {
-                        this.log.error('request 24hr error');
+                        this.log.error('request 24h error');
                         this.log.error(error);
                     }
                 }
@@ -137,7 +137,7 @@ class Binance extends utils.Adapter {
 
                     } else if (response.statusCode == 418 || response.statusCode == 429) {
                         // we need to back off
-                        this.log.warn('need to back off');
+                        this.log.warn('prices: need to back off');
                         // TODO
 
                     } else if (response.statusCode == 400){
@@ -212,7 +212,7 @@ class Binance extends utils.Adapter {
 
                         } else if (response.statusCode == 418 || response.statusCode == 429) {
                             // we need to back off
-                            this.log.warn('need to back off');
+                            this.log.warn('Account: need to back off');
                             // TODO
 
                         } else {
